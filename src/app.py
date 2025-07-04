@@ -64,10 +64,12 @@ with tab2:
     st.info("💡 Cliquez sur 'Enregistrer' puis parlez. Cliquez sur 'Arrêter' quand vous avez terminé.")
     
     if audio_recorder_available:
-        # Enregistreur audio fonctionnel
+        # Enregistreur audio fonctionnel avec streamlit-audiorecorder
+        st.info("🎤 Cliquez sur le premier bouton pour commencer l'enregistrement, puis sur le second pour l'arrêter.")
+        
         audio_bytes = audiorecorder(
-            "Cliquez pour enregistrer votre rêve",
-            "Cliquez pour arrêter l'enregistrement"
+            "Cliquer pour enregistrer",
+            "Cliquer pour arrêter l'enregistrement"
         )
         
         if len(audio_bytes) > 0:
