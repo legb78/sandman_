@@ -2,7 +2,8 @@ import os
 import tempfile
 import json
 from io import BytesIO
-from pydub import AudioSegment
+import soundfile as sf
+import numpy as np
 from groq import Groq
 from dotenv import load_dotenv
 
@@ -19,28 +20,24 @@ def preprocess_audio(audio_file):
     """
     Convert uploaded audio to proper format for processing
     Handles both uploaded files and recorded audio bytes
+    (Version sans pydub/audioop, compatible Python 3.13+)
     """
-    
     with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as temp_audio:
-        # Check if it's bytes data (from recorder) or file object (from uploader)
         if isinstance(audio_file, BytesIO):
-            # From audio recorder - already in bytes format
             temp_audio.write(audio_file.getvalue())
         else:
-            # From file uploader - get the bytes
             temp_audio.write(audio_file.getvalue())
         temp_audio_path = temp_audio.name
-    
-    # Convert to wav format if needed
-    audio = AudioSegment.from_file(temp_audio_path)
-    
-    # Normalize audio - adjust volume to a standard level
-    normalized_audio = audio.normalize()
-    
-    # Save the normalized audio
+
+    # Lire l'audio avec soundfile
+    data, samplerate = sf.read(temp_audio_path)
+    # Normalisation simple (peak normalization)
+    peak = np.abs(data).max()
+    if peak > 0:
+        data = data / peak
+    # Sauvegarder l'audio normalisé
     normalized_path = f"{temp_audio_path}_normalized.wav"
-    normalized_audio.export(normalized_path, format="wav")
-    
+    sf.write(normalized_path, data, samplerate)
     return normalized_path
 
 def transcribe_audio(audio_path):
