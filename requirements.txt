@@ -1,8 +1,9 @@
-streamlit
+pip-requirements
+streamlit==1.24.0
 groq
 python-dotenv
 requests
 pydub
-mistralai
-Pillow
+mistral
+pillow
 st-audiorec
