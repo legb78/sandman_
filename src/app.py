@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 # Importer l'enregistreur audio
 try:
-    from audiorecorder import audiorecorder
+    from st_audiorec import st_audiorec
     audio_recorder_available = True
 except ImportError:
     audio_recorder_available = False
@@ -64,23 +64,20 @@ with tab2:
     st.info("💡 Cliquez sur 'Enregistrer' puis parlez. Cliquez sur 'Arrêter' quand vous avez terminé.")
     
     if audio_recorder_available:
-        # Enregistreur audio fonctionnel avec streamlit-audiorecorder
-        st.info("🎤 Cliquez sur le premier bouton pour commencer l'enregistrement, puis sur le second pour l'arrêter.")
+        # Enregistreur audio fonctionnel avec st-audiorec
+        st.info("🎤 Cliquez sur le bouton pour enregistrer votre rêve.")
         
-        audio_bytes = audiorecorder(
-            "Cliquer pour enregistrer",
-            "Cliquer pour arrêter l'enregistrement"
-        )
+        wav_audio_data = st_audiorec()
         
-        if len(audio_bytes) > 0:
-            st.audio(audio_bytes.export().read(), format="audio/wav")
+        if wav_audio_data is not None:
+            st.audio(wav_audio_data, format='audio/wav')
             # Convertir en objet similaire au file_uploader
-            audio_data = BytesIO(audio_bytes.export().read())
+            audio_data = BytesIO(wav_audio_data)
             audio_data.name = "recorded_audio.wav"
     else:
         # Fallback si la librairie n'est pas installée
-        st.warning("⚠️ L'enregistrement direct nécessite l'installation de `streamlit-audiorecorder`. Utilisez l'onglet 'Uploader un fichier' pour le moment.")
-        st.code("pip install streamlit-audiorecorder")
+        st.warning("⚠️ L'enregistrement direct nécessite l'installation de `st-audiorec`. Utilisez l'onglet 'Uploader un fichier' pour le moment.")
+        st.code("pip install st-audiorec")
 
 if audio_data is not None:
     # Afficher un lecteur audio pour le fichier téléchargé
