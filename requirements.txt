@@ -6,3 +6,4 @@ pydub
 mistralai
 Pillow
 audio-recorder-streamlit
+pyaudio
