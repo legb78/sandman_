@@ -1,9 +1,8 @@
-pip-requirements
-streamlit==1.24.0
-groq
-python-dotenv
-requests
-pydub
-mistral
-pillow
-st-audiorec
+streamlit==1.32.0
+groq==0.10.0
+python-dotenv==1.0.0
+requests==2.31.0
+pydub==0.25.1
+mistralai==0.4.0
+pillow==10.1.0
+streamlit-audiorecorder

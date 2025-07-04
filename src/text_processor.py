@@ -1,6 +1,6 @@
 import os
 import json
-from mistralai import Mistral
+from mistralai.client import MistralClient
 from dotenv import load_dotenv
 
 # Charger les variables d'environnement
@@ -8,7 +8,7 @@ load_dotenv()
 
 # Initialiser le client Mistral
 MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
-client = Mistral(api_key=MISTRAL_API_KEY)
+client = MistralClient(api_key=MISTRAL_API_KEY)
 
 def extract_visual_elements(raw_text):
     """

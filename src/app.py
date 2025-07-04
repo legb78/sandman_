@@ -1,12 +1,13 @@
 import streamlit as st
 import os
 import sys
+import tempfile
 from io import BytesIO
 from dotenv import load_dotenv
 
 # Importer l'enregistreur audio
 try:
-    from st_audiorec import st_audiorec
+    from audiorecorder import audiorecorder
     audio_recorder_available = True
 except ImportError:
     audio_recorder_available = False
@@ -64,20 +65,36 @@ with tab2:
     st.info("💡 Cliquez sur 'Enregistrer' puis parlez. Cliquez sur 'Arrêter' quand vous avez terminé.")
     
     if audio_recorder_available:
-        # Enregistreur audio fonctionnel avec st-audiorec
+        # Enregistreur audio fonctionnel avec audiorecorder
         st.info("🎤 Cliquez sur le bouton pour enregistrer votre rêve.")
         
-        wav_audio_data = st_audiorec()
+        audio_recorder = audiorecorder("Enregistrer", "Arrêter")
         
-        if wav_audio_data is not None:
+        if len(audio_recorder) > 0:
+            # Exporter en fichier temporaire
+            temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.wav')
+            audio_recorder.export(temp_file.name, format='wav')
+            temp_file.close()
+            
+            # Lire le fichier en tant que bytes
+            with open(temp_file.name, 'rb') as f:
+                wav_audio_data = f.read()
+                
             st.audio(wav_audio_data, format='audio/wav')
+            
             # Convertir en objet similaire au file_uploader
             audio_data = BytesIO(wav_audio_data)
             audio_data.name = "recorded_audio.wav"
+            
+            # Supprimer le fichier temporaire
+            try:
+                os.remove(temp_file.name)
+            except:
+                pass
     else:
         # Fallback si la librairie n'est pas installée
-        st.warning("⚠️ L'enregistrement direct nécessite l'installation de `st-audiorec`. Utilisez l'onglet 'Uploader un fichier' pour le moment.")
-        st.code("pip install st-audiorec")
+        st.warning("⚠️ L'enregistrement direct nécessite l'installation de `streamlit-audiorecorder`. Utilisez l'onglet 'Uploader un fichier' pour le moment.")
+        st.code("pip install streamlit-audiorecorder")
 
 if audio_data is not None:
     # Afficher un lecteur audio pour le fichier téléchargé
