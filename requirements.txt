@@ -5,4 +5,4 @@ requests
 pydub
 mistralai
 Pillow
-st-audiorec
+streamlit-audiorecorder
